@@ -13,14 +13,14 @@ body {
 .wrap {
   text-align:left;
   display:inline-block;
-  width:1120px;  
+  width:960px;
 }
 
 h2 {text-align:center}
 
 #currency-pair {
   margin-left:55px;
-  display:inline-block;	
+  display:inline-block;
 }
 
 #currency-pair h3 {
@@ -34,7 +34,7 @@ h2 {text-align:center}
 
 #flip {
   margin: 0 10px;
-  font-size:12px;	
+  font-size:12px;
   cursor:pointer;
 }
 
@@ -81,7 +81,7 @@ h2 {text-align:center}
     <span id="flip">Flip</span>
     <div id="quote"></div>
   </div>
-  
+
   <div id="chartType"></div>
   <div id="interval"></div>
   <div id="priceChart"></div>
@@ -163,7 +163,7 @@ var chartType = d3.select("#chartType").selectAll("a")
   .enter().append("a")
   .attr("href", "#")
   .classed("selected", function(_, i) { return !i; })
-  .text(function(d) { return d })		
+  .text(function(d) { return d })
   .on("click", function(d) {
     d3.event.preventDefault();
     var that = this;
@@ -176,11 +176,11 @@ var chartType = d3.select("#chartType").selectAll("a")
 
 var priceChart = new PriceChart ({
   id     : "#priceChart",
-  url    : offersURL,	
+  url    : offersURL,
   type   : chartType.selected,
-  width  : 1000,
+  width  : 820,
   height : 500,
-});	
+});
 
 
 //load initial graph
@@ -195,21 +195,22 @@ var remote = new ripple.Remote.from_config({
   "websocket_port" : 443,
   "websocket_ssl"  : true
 });
-  
-  
+
+
 //feed = new TransactionFeed({remote:remote,base:base,trade:trade});
 //feed.listen();
 
 book = new OrderBook ({
   chartID : "bookChart",
   tableID : "bookTables",
+  width: 820
 });
 
 book.resetChart();
-  
+
 remote.connect();
 remote.on('connect', function(){
   book.getMarket(base, trade);
-}); 
- 
+});
+
 </script>
