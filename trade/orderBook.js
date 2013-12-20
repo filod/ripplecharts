@@ -191,8 +191,8 @@ var OrderBook = function (options) {
       var quantity = d.showTakerPays ? d.showTakerPays : d.showTakerGets;
       hover.attr("transform", "translate(" + xScale(d.showPrice) + ")").style("opacity",1);
       focus.attr("transform", "translate(" + xScale(d.showPrice) + "," + yScale(d.showSum) + ")").style("opacity",1);
-      details.html("<span>Quantity:<b>" + quantity +
-        "</b></span><span>Total<b>" +d.showSum + " " + options.base.currency + "</b></span>" +
+      details.html("<span>量:<b>" + quantity +
+        "</b></span><span>总计<b>" +d.showSum + " " + options.base.currency + "</b></span>" +
         "<span> @ <b>" + d.showPrice + " " + options.trade.currency + "</b></span>")
         .style("opacity",1);
     }
@@ -205,7 +205,8 @@ var OrderBook = function (options) {
 
   // append the top header
   bidsHead.append("tr").selectAll("th")
-    .data(["Bids"])
+    // .data(["Bids"])
+    .data(["买入"])
     .enter().append("th")
     .attr("class","type")
     .attr("colspan",3)
@@ -213,7 +214,7 @@ var OrderBook = function (options) {
 
   //append second header
   bidsHead.append("tr").attr("class","headerRow").selectAll("th")
-    .data(["Total","Size","Bid Price"])
+    .data(["总计","量","出价"])
     .enter().append("th")
     .text(function(d) {return d;})
     .append("span");
@@ -224,7 +225,7 @@ var OrderBook = function (options) {
 
   // append the top header
   asksHead.append("tr").selectAll("th")
-    .data(["Asks"])
+    .data(["卖出"])
     .enter().append("th")
     .attr("class","type")
     .attr("colspan",3)
@@ -232,7 +233,7 @@ var OrderBook = function (options) {
 
   //append second header
   asksHead.append("tr").attr("class","headerRow").selectAll("th")
-    .data(["Ask Price","Size","Total"])
+    .data(["要价","量","总计"])
     .enter().append("th")
     .text(function(d) {return d;})
     .append("span");

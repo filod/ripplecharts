@@ -1,0 +1,29 @@
+[{
+    "name": "RippleChina",
+    "accounts": [{
+        "address": "razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA",
+        "currencies": ["CNY"],
+        "hotwallets": ["r45dBj4S3VvMMYXxr9vHX4Z4Ma6ifPMCkK"]
+    }]
+}, {
+    "name": "rippleCN",
+    "accounts": [{
+        "address": "rnuF96W4SZoCJmbHYBFoJZpR8eCaxNvekK",
+        "currencies": ["BTC", "CNY"],
+        "hotwallets": ["rNaptDNfFXo1quhKwMaNPf66iwPqA8YLky", "rno91tGDJeRcnM7EMXj8KG9UTyxRGMMz8s"]
+    }]
+}, {
+    "name": "rippay",
+    "accounts": [{
+        "address": "rMkA3YZMUnBc7Nv7psHzRgTQ7NQ8LhHukU",
+        "currencies": ["CNY"],
+        "hotwallets": []
+    }]
+}, {
+    "name": "Bitstamp",
+    "accounts": [{
+        "address": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+        "currencies": ["AUD", "BTC", "CHF", "EUR", "GBP", "JPY", "USD"],
+        "hotwallets": ["rrpNnNLKrartuEqfJGpqyDwPj1AFPg9vn1"]
+    }]
+}]

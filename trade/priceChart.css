@@ -4,7 +4,7 @@ h1, h2, h3, h4 {
 }
 
 .chart svg {
-    opacity : 0;	
+    opacity : 0;
 }
 
 .chart .background {
@@ -17,7 +17,7 @@ h1, h2, h3, h4 {
     width:40px;
     position:absolute;
     top:50%;
-    left:50%;	
+    left:50%;
     margin-top:-50px;
     margin-left:-20px;
 }
@@ -94,10 +94,10 @@ h1, h2, h3, h4 {
 }
 
 .candlesticks line {
-    stroke: #777;    
+    stroke: #777;
 }
 
-.candlesticks .filled rect{    
+.candlesticks .filled rect{
 }
 
 .candlesticks .up rect {
@@ -105,15 +105,15 @@ h1, h2, h3, h4 {
     stroke: #262;
 }
 
-.candlesticks .up.filled rect{ 
+.candlesticks .up.filled rect{
 }
 
 .candlesticks line {
-    stroke-width : 2;	
+    stroke-width : 2;
 }
 
 .chart .volumeBars rect {
-    fill : #ddd;	
+    fill : #ddd;
     stroke : #bbb;
 }
 
@@ -121,13 +121,13 @@ h1, h2, h3, h4 {
     font-size:15px;
 }
 
-div.chartDetails {   
-    position: absolute;  
-    top: -20px;
-    right: 60px;         
-    text-align: left;      
-    font-size:14px;   
-    color:#333;      
+div.chartDetails {
+    position: absolute;
+    top: -16px;
+    right: 60px;
+    text-align: left;
+    font-size:14px;
+    color:#333;
 }
 
 div.chartDetails span {
@@ -139,7 +139,7 @@ div.chartDetails span {
 
 div.chartDetails b {margin:0 .25em}
 
-div.chartDetails .date {min-width:150px}
+div.chartDetails .date {min-width:150px; text-align: right;}
 div.chartDetails .high {color:#090}
 div.chartDetails .low {color:#900}
 div.chartDetails .volume {color:#369}

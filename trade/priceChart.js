@@ -7,7 +7,7 @@ PriceChart = function (options) {
     volumeAxis  = d3.svg.axis().scale(volumeScale).orient("left").tickFormat(d3.format("s")),
     priceAxis   = d3.svg.axis().scale(priceScale).orient("right");
 
-  self.type = options.type ? options.type : "line";  //default to line  	
+  self.type = options.type ? options.type : "line";  //default to line
 
   if (!options.margin) options.margin = {top: 10, right: 60, bottom: 30, left: 60};
   if (!options.height) options.height = 500;
@@ -17,7 +17,7 @@ PriceChart = function (options) {
   var svg = div.selectAll("svg").data([0])
   var svgEnter = svg.enter().append("svg")
     .attr("width", options.width + options.margin.left + options.margin.right)
-    .attr("height", options.height + options.margin.top + options.margin.bottom);   
+    .attr("height", options.height + options.margin.top + options.margin.bottom);
 
   svg.append("defs").append("clipPath").attr("id", "clip").append("rect");
   svg.select("rect").attr("width", options.width).attr("height", options.height);
@@ -25,25 +25,25 @@ PriceChart = function (options) {
   var gEnter = svg.append("g")
     .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")");
   gEnter.append("rect").attr("class", "background").attr("width", options.width).attr("height", options.height);
-  gEnter.append("g").attr("class", "volumeBars").attr("clip-path", "url(#clip)");   
+  gEnter.append("g").attr("class", "volumeBars").attr("clip-path", "url(#clip)");
   gEnter.append("g").attr("class", "candlesticks").attr("clip-path", "url(#clip)");
   gEnter.append("path").attr("class", "line");
   gEnter.append("g").attr("class", "x axis");
 
-  gEnter.append("g").attr("class", "volume axis")   
-    .append("text").text("Volume")
+  gEnter.append("g").attr("class", "volume axis")
+    .append("text").text("量")
     .attr("class", "title")
     .attr("transform", "rotate(-90)")
     .attr("y",15).attr("x",-90);
 
   gEnter.append("g").attr("class", "price axis")
     .attr("transform", "translate("+options.width+", 0)")
-    .append("text").text("Price")
+    .append("text").text("价")
       .attr("class", "title")
       .attr("transform", "rotate(-90)")
       .attr("y",-10).attr("x",-80);
-        
-  // gradient for volume bars	    
+
+  // gradient for volume bars
   var gradient = svg.append("svg:defs")
     .append("svg:linearGradient")
     .attr("id", "gradient")
@@ -61,21 +61,21 @@ PriceChart = function (options) {
   gradient.append("svg:stop")
     .attr("offset", "100%")
     .attr("stop-color", "#eee")
-    .attr("stop-opacity", 1);	
+    .attr("stop-opacity", 1);
 
   var hover       = gEnter.append("line").attr("class", "hover").attr("y2", options.height);
   var horizontal  = gEnter.append("line").attr("class", "hover");
   var focus       = gEnter.append("circle").attr("class", "focus dark").attr("r",3);
   var status      = div.append("h4").attr("class", "status");
 
-  var details = div.append("div")   
-    .attr("class", "chartDetails")               
-    .style("opacity", 0);      
+  var details = div.append("div")
+    .attr("class", "chartDetails")
+    .style("opacity", 0);
 
   var loader = div.append("img")
     .attr("class", "loader")
     .attr("src", "images/throbber5.gif")
-    .style("opacity", 0);	
+    .style("opacity", 0);
 
 
   //fade to throber when reloading from history
@@ -85,24 +85,24 @@ PriceChart = function (options) {
     details.style("opacity", 0);
     status.style("opacity", 0);
     div.selectAll(".hover").style("opacity", 0);
-    div.selectAll(".focus").style("opacity", 0);	
-    loader.style("opacity",1);	
+    div.selectAll(".focus").style("opacity", 0);
+    loader.style("opacity",1);
   }
 
-    //set to line or candlestick  	
+    //set to line or candlestick
   this.setType = function (type) {
     self.type = type;
 
     if (self.type == 'line') {
-      gEnter.select(".line").style("opacity",1); 
-      gEnter.select(".candlesticks").style("opacity",0);				
+      gEnter.select(".line").style("opacity",1);
+      gEnter.select(".candlesticks").style("opacity",0);
     } else {
-      gEnter.select(".line").style("opacity",0); 
-      gEnter.select(".candlesticks").style("opacity",1);	
+      gEnter.select(".line").style("opacity",0);
+      gEnter.select(".candlesticks").style("opacity",1);
     }
   };
 
-  //load historical from API  	  	      			
+  //load historical from API
   this.load = function (base, trade, d) {
     self.fadeOut();
 
@@ -130,7 +130,7 @@ PriceChart = function (options) {
       data = JSON.parse(xhr.response);
       if (data.length<2) self.lineData = [];
       else {
-        data.splice(0,1); //remove first		
+        data.splice(0,1); //remove first
         self.lineData = data.map(function(d) {
           return {
             time   : isoDate(d[0]),
@@ -150,20 +150,20 @@ PriceChart = function (options) {
 
 
 
-  function drawChart () {	
+  function drawChart () {
     if (!self.lineData || !self.lineData.length) {
       loader.style("opacity",0);
       div.selectAll("svg").transition().style("opacity",0);
       status.html("No Data for this Period").style("opacity",1);
-      return;	
+      return;
     }
 
     if (self.type == 'line') {
-      gEnter.select(".line").style("opacity",1); 
-      gEnter.select(".candlesticks").style("opacity",0);				
+      gEnter.select(".line").style("opacity",1);
+      gEnter.select(".candlesticks").style("opacity",0);
     } else {
-      gEnter.select(".line").style("opacity",0); 
-      gEnter.select(".candlesticks").style("opacity",1);	
+      gEnter.select(".line").style("opacity",0);
+      gEnter.select(".candlesticks").style("opacity",1);
     }
 
     var line = d3.svg.line()
@@ -171,14 +171,14 @@ PriceChart = function (options) {
       .y(function(d) { return priceScale(d.close); });
 
     var candleWidth = options.width/(self.lineData.length*1.15);
-    if (candleWidth<4) candleWidth = 4; 
+    if (candleWidth<4) candleWidth = 4;
 
     svg.datum(self.lineData).on("mousemove.hover", mousemove);
 
-    gEnter.select(".axis.price").select("text").text("Price ("+self.trade.currency+")");
-    gEnter.select(".axis.volume").select("text").text("Volume ("+self.base.currency+")");
+    gEnter.select(".axis.price").select("text").text("价 ("+self.trade.currency+")");
+    gEnter.select(".axis.volume").select("text").text("量 ("+self.base.currency+")");
     var bars = gEnter.select(".volumeBars").selectAll("rect").data(self.lineData);
-    bars.enter().append("rect"); 
+    bars.enter().append("rect");
 
     // add the candlesticks.
     var candle = gEnter.select(".candlesticks").selectAll("g").data(self.lineData);
@@ -186,9 +186,9 @@ PriceChart = function (options) {
       .attr("transform", function(d) { return "translate(" + xScale(d.time) + ")"; });
     candleEnter.append("line").attr("class","extent");
     candleEnter.append("line").attr("class", "high");
-    candleEnter.append("line").attr("class", "low");    
-    candleEnter.append("rect");	
-        
+    candleEnter.append("line").attr("class", "low");
+    candleEnter.append("rect");
+
     // Update the x-scale.
     xScale
       .domain(getExtents())
@@ -207,7 +207,7 @@ PriceChart = function (options) {
       .range([options.height, 0]);
 
     //add the price line
-    gEnter.select(".line").datum(self.lineData).transition().attr("d", line);	
+    gEnter.select(".line").datum(self.lineData).transition().attr("d", line);
 
     //add the volume bars
     bars.data(self.lineData)
@@ -217,30 +217,30 @@ PriceChart = function (options) {
       .attr("width", candleWidth/1.5)
       .attr("height", function(d){return options.height - volumeScale(d.volume)})
       .style("fill", "url(#gradient)")
-        
+
     bars.exit().remove();
 
      /*
-         * Candlestick rules: 
+         * Candlestick rules:
          * previous.close < current.close = up/green
          * previous.close > current.close = down/red
          * current.close<current.open = filled
          * current.close>current.open = hollow
      */
-                    
-    var candleUpdate = candle.classed("up", function(d, i) { 
+
+    var candleUpdate = candle.classed("up", function(d, i) {
       if (i>0) {
         var prev = self.lineData[i-1];
         return prev.close<=d.close;
       }
-          
+
       return d.open <= d.close; //just for the first, accurate most of the time
       }).classed("filled", function (d){
-         return d.close<=d.open; 
+         return d.close<=d.open;
       })
       .transition()
       .attr("transform", function(d) { return "translate(" + xScale(d.time) + ")"; });
-        
+
     candleUpdate.select(".extent")
       .attr("y1", function(d) { return priceScale(d.low); })
       .attr("y2", function(d) { return priceScale(d.high); });
@@ -256,7 +256,7 @@ PriceChart = function (options) {
     candleUpdate.select(".low")
       .attr("x1", -candleWidth / 4)
       .attr("x2", candleWidth / 4)
-      .attr("transform", function(d) { return "translate(0," + priceScale(d.low) + ")"; });	
+      .attr("transform", function(d) { return "translate(0," + priceScale(d.low) + ")"; });
     d3.transition(candle.exit())
       .attr("transform", function(d) { return "translate(" + xScale(d.time) + ")"; })
       .style("opacity", 1e-6).remove();
@@ -298,12 +298,12 @@ PriceChart = function (options) {
       }
 
       var details = div.select('.chartDetails');
-      details.html("<span class='date'>"+ parseDate(d, self.interval) + 
+      details.html("<span class='date'>"+ parseDate(d, self.interval) +
         "</span><span>O:<b>" + open  + "</b></span>" +
         "<span class='high'>H:<b>" + high + "</b></span>" +
         "<span class='low'>L:<b>" + low + "</b></span>" +
         "<span>C:<b>" + close  + "</b></span>" +
-        "<span class='volume'>Volume:<b>" + vol + " " + self.base.currency + "</b></span>")
+        "<span class='volume'>量:<b>" + vol + " " + self.base.currency + "</b></span>")
         .style("opacity",1);
 
       hover.transition().duration(50).attr("transform", "translate(" + xScale(d.time) + ")");
@@ -329,7 +329,7 @@ PriceChart = function (options) {
         d3.time.second.offset(d3.max(self.lineData, function(d) { return d.time }), difference)];
     }
 
-    return d3.extent(self.lineData, function(d) { return d.volume; });	
+    return d3.extent(self.lineData, function(d) { return d.volume; });
   }
 
   function params(o) {
@@ -343,16 +343,16 @@ PriceChart = function (options) {
 
   function isoDate (string) {
     var a = string.split(/[^0-9]/);
-    return new Date (a[0],a[1]-1,a[2],a[3],a[4],a[5] );      
+    return new Date (a[0],a[1]-1,a[2],a[3],a[4],a[5] );
   }
 
   function parseDate (date, increment) {
     var monthNames = [ "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December" ];
 
-    if      (increment == "month") return monthNames[d.time.getMonth()] + " " + d.time.getYear();
-    else if (increment == "day")   return monthNames[d.time.getMonth()] + " " + d.time.getDate();
-    else return monthNames[d.time.getMonth()] + " " + d.time.getDate() + " &middot " + d.time.toLocaleTimeString();
+    if      (increment == "month") return moment(d.time).format('YYYY-MM');
+    else if (increment == "day")   return moment(d.time).format('YYYY-MM-DD');
+    else return moment(d.time).format('MM-DD HH:mm');
   }
 }
 

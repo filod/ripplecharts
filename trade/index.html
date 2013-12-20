@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,700' rel='stylesheet' type='text/css'>
+<!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,700' rel='stylesheet' type='text/css'> -->
 <title>Ripple Charts</title>
 <style>
 @import url(priceChart.css);
@@ -78,18 +78,19 @@ h2 {text-align:center}
 <div class="wrap">
   <div id="currency-pair">
     <div id="base"></div>
-    <span id="flip">Flip</span>
+    <span id="flip">换</span>
     <div id="quote"></div>
   </div>
 
   <div id="chartType"></div>
   <div id="interval"></div>
   <div id="priceChart"></div>
-  <h2>Order Book</h2>
+  <h2>委托信息</h2>
   <div id="bookChart"></div>
   <div id="bookTables"></div>
 </div>
 <script src="d3/d3.min.js"></script>
+<script src="moment.min.js"></script>
 <script src="ripple/ripple-0.7.30-min.js"></script>
 <script src="priceChart.js"></script>
 <script src="rippleCharts.js"></script>
@@ -159,7 +160,7 @@ var intervalA = d3.select("#interval").selectAll("a")
   });
 
 var chartType = d3.select("#chartType").selectAll("a")
-  .data(["line", "candlestick"])
+  .data(["折线图", "K线图"])
   .enter().append("a")
   .attr("href", "#")
   .classed("selected", function(_, i) { return !i; })
