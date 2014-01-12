@@ -3,6 +3,8 @@
 <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,700' rel='stylesheet' type='text/css'> -->
 <title>Ripple Charts</title>
 <style>
+
+@import url(bootstrap/bootstrap.min.css);
 @import url(priceChart.css);
 @import url(orderBook.css);
 
@@ -13,10 +15,14 @@ body {
 .wrap {
   text-align:left;
   display:inline-block;
-  width:960px;
+  width:1000px;
 }
 
 h2 {text-align:center}
+select {
+  width:auto;
+  margin:2px;
+}
 
 #currency-pair {
   margin-left:55px;
@@ -64,6 +70,10 @@ h2 {text-align:center}
 #bookChart {margin-top:1em}
 </style>
 
+<!-- <h3 style="color: red;">INTERNAL USE ONLY</h3>
+<h5 style="color: red;">This data has not been thoroughly vetted yet and may contain errors. Please email <a href="mailto:evan@ripple.com">Evan Schwartz</a> if any of the numbers seem questionable.</h5>
+<hr> -->
+
 <div id="trades" style="display:none">
   <div><span id="last-price"></span><span class="symbol-quote"></span></div>
   <table>
@@ -89,18 +99,19 @@ h2 {text-align:center}
   <div id="bookChart"></div>
   <div id="bookTables"></div>
 </div>
+
 <script src="d3/d3.min.js"></script>
 <script src="moment.min.js"></script>
 <script src="ripple/ripple-0.7.30-min.js"></script>
+<script src="moment.min.js"></script>
+<script src="apiHandler.js"></script>
 <script src="priceChart.js"></script>
-<script src="rippleCharts.js"></script>
 <script src="currency.js"></script>
 <script src="transactionFeed.js"></script>
 <script src="orderBook.js"></script>
 <script>
 
-var base      = "http://ct.ripple.com:5993/api/";
-var offersURL = base + "offersexercised";
+var apiUrl = "http://ct.ripple.com:5993/api";
 
 var loaded = false,
   trade    = {currency:"USD", issuer:"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},
@@ -170,14 +181,18 @@ var chartType = d3.select("#chartType").selectAll("a")
     var that = this;
     chartType.classed("selected", function() { return this === that; });
     chartType.selected = d;
-    priceChart.setType(d);
+    var typeMap = {
+      "折线图": "line",
+      "K线图": "candlesticks"
+    }
+    priceChart.setType(typeMap[d]);
   });
 
   chartType.selected = "line";
 
 var priceChart = new PriceChart ({
   id     : "#priceChart",
-  url    : offersURL,
+  url    : apiUrl,
   type   : chartType.selected,
   width  : 820,
   height : 500,

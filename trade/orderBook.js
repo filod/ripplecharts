@@ -1,6 +1,6 @@
 var OrderBook = function (options) {
   var self    = this, asks, bids;
-  self.offers = {};
+  self.offers;
 
   var chart  = d3.select("#"+options.chartID).attr('class','chart');
   var width  = options.width || 1000,
@@ -19,14 +19,18 @@ var OrderBook = function (options) {
   var gEnter = depth.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
+  var xAxis      = gEnter.append("g").attr("class", "x axis");
+  var leftAxis   = gEnter.append("g").attr("class", "y axis");
+  var rightAxis  = gEnter.append("g").attr("class", "y axis");
+  var xTitle     = xAxis.append("text").attr("class", "title").attr("y",-5).attr("x",10);
+  var leftTitle  = leftAxis.append("text").attr("class", "title").attr("transform", "rotate(-90)").attr("y",15).attr("x",-25);
+  var rightTitle = rightAxis.append("text").attr("class", "title").attr("transform", "rotate(-90)").attr("y",-5).attr("x",-25);
 
-  var xAxis     = gEnter.append("g").attr("class", "x axis");
-  var leftAxis  = gEnter.append("g").attr("class", "y axis");
-  var rightAxis = gEnter.append("g").attr("class", "y axis");
-
-  var hover     = gEnter.append("line").attr("class", "hover").attr("y2", height).style("opacity",0);
-  var focus     = gEnter.append("circle").attr("class", "focus dark").attr("r",3).style("opacity",0);
-  var path      = gEnter.append("path").attr("class","line");
+  var hover      = gEnter.append("line").attr("class", "hover").attr("y2", height).style("opacity",0);
+  var focus      = gEnter.append("circle").attr("class", "focus dark").attr("r",3).style("opacity",0);
+  var centerline = gEnter.append("line").attr("class", "centerline").attr("y2", height).style("opacity",0);
+  var path       = gEnter.append("path").attr("class","line");
+  var status     = chart.append("h4").attr("class", "status");
 
   var details   = chart.append("div")
         .attr("class", "chartDetails")
@@ -38,6 +42,15 @@ var OrderBook = function (options) {
     .attr("class", "loader")
     .attr("src", "images/throbber5.gif")
     .style("opacity", 0);
+
+  function setStatus (string) {
+    status.html(string).style("opacity",1);
+    if (string) {
+      loader.transition().style("opacity",0);
+      path.transition().style("opacity",0);
+      centerline.transition().style("opacity",0);
+    }
+  }
 
   function valueFilter (price, opts) {
     return ripple.Amount.from_json(price).to_human(
@@ -51,9 +64,10 @@ var OrderBook = function (options) {
 
 
   function handleBook (data,action) {
-    var max_rows = options.max_rows || 100;
-    var rowCount = 0;
-    var offers   = [];
+
+    var max_rows = options.max_rows || 100,
+      rowCount   = 0,
+      offers     = [];
 
     for (var i=0; i<data.length; i++) {
       var d = data[i];
@@ -78,7 +92,6 @@ var OrderBook = function (options) {
       // Adjust for drops: The result would be a million times too small.
       if (d[action === "asks" ? "TakerGets" : "TakerPays"].is_native())
         d.price  = d.price.multiply(ripple.Amount.from_json("1000000"));
-
 
       if (rowCount++ > max_rows) break;
 
@@ -148,23 +161,45 @@ var OrderBook = function (options) {
     loader.transition().style("opacity",1);
     details.style("opacity",0);
     hover.style("opacity",0);
+
     focus.style("opacity",0);
+    setStatus("");
   }
 
   function redrawChart () {
-    if (!self.offers.bids || !self.offers.asks) return;
+    if (!self.offers.bids || !self.offers.asks) return; //wait for both to load
+    if (!self.offers.bids.length || !self.offers.asks.length) {
+      setStatus("No Orders");
+      return;
+    }
 
-    lineData = self.offers.bids.slice(0).reverse().concat(self.offers.asks);
-    if (!lineData.length) {
+    setStatus("");
+    var bestBid = self.offers.bids[0].showPrice,
+      bestAsk   = self.offers.asks[0].showPrice;
+
+    //add 0 size at best bid and ask
+    lineData = self.offers.bids.slice(0).reverse();
+    lineData.push({showPrice:bestBid,showSum:0});
+    lineData.push({showPrice:bestAsk,showSum:0});
+    lineData = lineData.concat(self.offers.asks);
+
+    if (lineData.length<3) {
       loader.transition().style("opacity",0);
       path.transition().style("opacity",0);
       return;
     }
 
-    var extent = d3.extent(lineData, function(d) { return d.showPrice; });
+    //get rid of outliers, anything greater than 5 times the best price
+    var min = Math.max(d3.min(lineData, function(d) { return d.showPrice; }), bestBid/5),
+      max   = Math.min(d3.max(lineData, function(d) { return d.showPrice; }), bestAsk*5);
 
-    xScale.domain(extent).range([0, width]);
+    for (var i=0; i<lineData.length; i++) {
+      if (lineData[i].showPrice<min || lineData[i].showPrice>max) lineData.splice(i--,1);
+    }
+
+    xScale.domain(d3.extent(lineData, function(d) { return d.showPrice; })).range([0, width]);
     yScale.domain([0, d3.max(lineData, function(d) { return d.showSum; })]).range([height, 0]);
+    center = xScale((bestBid+bestAsk)/2);
 
     path.datum(lineData)
         .transition()
@@ -177,15 +212,25 @@ var OrderBook = function (options) {
     leftAxis.attr("transform", "translate(" + xScale.range()[0] + ",0)").call(d3.svg.axis().scale(yScale).orient("left"));
     rightAxis.attr("transform", "translate(" + xScale.range()[1] + ",0)").call(d3.svg.axis().scale(yScale).orient("right"));
 
+    xTitle.text("Price ("+options.trade.currency+")");
+    leftTitle.text(options.base.currency);
+    rightTitle.text(options.base.currency);
+
+    centerline.transition().attr("transform", "translate("+center+",0)").style("opacity",1);
     path.style("opacity",1);
+
     depth.transition().style("opacity",1);
     loader.transition().style("opacity",0);
+
   }
 
   function mousemove () {
     var tx = Math.max(0, Math.min(width+margin.left, d3.mouse(this)[0])),
         i = d3.bisect(lineData.map(function(d) { return d.showPrice; }), xScale.invert(tx-margin.left));
         d = lineData[i];
+
+        //prevent 0 sum numbers at best bid/ask from displaying
+        if (d && !d.showSum) d = d.showPrice==bestBid ? lineData[i-1] : lineData[i+1];
 
     if (d) {
       var quantity = d.showTakerPays ? d.showTakerPays : d.showTakerGets;

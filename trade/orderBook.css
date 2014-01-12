@@ -1,6 +1,7 @@
 body {
   margin: 0;
 }
+.chart .centerline {stroke:#cde}
 .bookTables {
   width:960px;
   overflow:hidden;
